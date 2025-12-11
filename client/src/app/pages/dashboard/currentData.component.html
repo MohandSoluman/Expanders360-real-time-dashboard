@@ -1,0 +1,51 @@
+<div class="mb-4 flex items-center justify-between">
+  <h2 class="text-title-md2 font-bold text-black dark:text-white">Dashboard</h2>
+  <button
+    (click)="store.toggleSimulation()"
+    class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-90 transition-all"
+  >
+    <span *ngIf="!store.isPaused()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-5 h-5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15.75 5.25v13.5m-7.5-13.5v13.5"
+        />
+      </svg>
+      Pause Updates
+    </span>
+    <span *ngIf="store.isPaused()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-5 h-5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z"
+        />
+      </svg>
+      Resume Updates
+    </span>
+  </button>
+</div>
+
+<div class="grid grid-cols-12 gap-4 md:gap-6">
+  <div class="col-span-12">
+    <app-event-timeline class="block mb-6" />
+    <app-workflow-status-cards class="block mb-6" />
+    <app-anomaly-heatmap class="block mb-6" />
+    <app-workflow-volume-chart />
+  </div>
+</div>

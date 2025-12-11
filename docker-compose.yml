@@ -1,0 +1,24 @@
+services:
+  server:
+    build: ./server
+    image: rtm-dashboard-server:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - dashboard-network
+    restart: unless-stopped
+
+  client:
+    build: ./client
+    image: rtm-dashboard-client:latest
+    ports:
+      - "4200:80"
+    networks:
+      - dashboard-network
+    restart: unless-stopped
+    depends_on:
+      - server
+
+networks:
+  dashboard-network:
+    driver: bridge

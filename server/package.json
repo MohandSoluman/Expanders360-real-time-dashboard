@@ -1,0 +1,25 @@
+{
+  "name": "real-time-monitoring-dashboard",
+  "version": "1.0.0",
+  "description": "Legal teams need real-time visibility to detect delays, anomalies, and potential SLA breaches in workflows (case intake, approvals, document reviews).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MohandSoluman/real-time-monitoring-dashboard.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MohandSoluman/real-time-monitoring-dashboard/issues"
+  },
+  "homepage": "https://github.com/MohandSoluman/real-time-monitoring-dashboard#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "socket.io": "^4.8.1"
+  }
+}
