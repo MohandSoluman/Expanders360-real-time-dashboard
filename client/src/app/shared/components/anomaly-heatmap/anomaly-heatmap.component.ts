@@ -1,14 +1,17 @@
 import { Component, inject, computed, signal } from "@angular/core";
 import { CommonModule, DatePipe } from "@angular/common";
 import { DashboardStore, Anomaly } from "../../../core/store/dashboard.store";
+import { SkeletonLoaderComponent } from "../skeleton-loader/skeleton-loader.component";
 
 @Component({
   selector: "app-anomaly-heatmap",
   standalone: true,
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule, DatePipe, SkeletonLoaderComponent],
   template: `
     <div
       class="w-full bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-200 dark:border-gray-800 p-5 shadow-theme-sm"
+      role="region"
+      aria-label="Anomaly Heatmap"
     >
       <div class="flex justify-between items-center mb-6">
         <div>
@@ -21,51 +24,104 @@ import { DashboardStore, Anomaly } from "../../../core/store/dashboard.store";
         </div>
       </div>
 
-      <div class="grid grid-cols-[auto_1fr] gap-4">
+      <!-- Loading State -->
+      <div *ngIf="store.isLoading()" class="h-48 w-full flex flex-col gap-2">
+        <app-skeleton-loader
+          width="100%"
+          height="48px"
+          borderRadius="4px"
+        ></app-skeleton-loader>
+        <app-skeleton-loader
+          width="100%"
+          height="48px"
+          borderRadius="4px"
+        ></app-skeleton-loader>
+        <app-skeleton-loader
+          width="100%"
+          height="48px"
+          borderRadius="4px"
+        ></app-skeleton-loader>
+      </div>
+
+      <div *ngIf="!store.isLoading()" class="grid grid-cols-[auto_1fr] gap-4">
         <!-- Y-Axis Labels (Severity) -->
         <div
           class="flex flex-col justify-around text-xs font-medium text-gray-500 dark:text-gray-400 h-48 py-2"
+          role="group"
+          aria-label="Filter by Severity"
         >
           <button
             (click)="toggleSeverity('high')"
-            class="flex items-center gap-2 transition-opacity hover:opacity-80"
+            class="flex items-center gap-2 transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary rounded"
             [class.opacity-40]="!isSeverityVisible('high')"
+            [attr.aria-pressed]="isSeverityVisible('high')"
+            aria-label="Toggle High Severity Anomalies"
           >
-            <span class="w-2 h-2 rounded-full bg-red-500"></span> High
+            <span
+              class="w-2 h-2 rounded-full bg-red-500"
+              aria-hidden="true"
+            ></span>
+            High
           </button>
 
           <button
             (click)="toggleSeverity('medium')"
-            class="flex items-center gap-2 transition-opacity hover:opacity-80"
+            class="flex items-center gap-2 transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary rounded"
             [class.opacity-40]="!isSeverityVisible('medium')"
+            [attr.aria-pressed]="isSeverityVisible('medium')"
+            aria-label="Toggle Medium Severity Anomalies"
           >
-            <span class="w-2 h-2 rounded-full bg-yellow-500"></span> Medium
+            <span
+              class="w-2 h-2 rounded-full bg-yellow-500"
+              aria-hidden="true"
+            ></span>
+            Medium
           </button>
 
           <button
             (click)="toggleSeverity('low')"
-            class="flex items-center gap-2 transition-opacity hover:opacity-80"
+            class="flex items-center gap-2 transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary rounded"
             [class.opacity-40]="!isSeverityVisible('low')"
+            [attr.aria-pressed]="isSeverityVisible('low')"
+            aria-label="Toggle Low Severity Anomalies"
           >
-            <span class="w-2 h-2 rounded-full bg-blue-400"></span> Low
+            <span
+              class="w-2 h-2 rounded-full bg-blue-400"
+              aria-hidden="true"
+            ></span>
+            Low
           </button>
         </div>
 
         <!-- Heatmap Grid -->
-        <div class="relative overflow-x-auto pb-2">
-          <div class="min-w-[600px] h-48 grid grid-rows-3 gap-1">
+        <div
+          class="relative overflow-x-auto pb-2"
+          tabindex="0"
+          aria-label="Heatmap data grid"
+        >
+          <div class="min-w-[600px] h-48 grid grid-rows-3 gap-1" role="grid">
             <!-- High Severity Row -->
-            <div class="grid grid-cols-24 gap-1">
+            <div class="grid grid-cols-24 gap-1" role="row">
               <div
                 *ngFor="let hour of hours"
                 (click)="selectCell(hour, 'high')"
-                class="rounded-sm cursor-pointer transition-all hover:scale-110 relative group"
+                (keydown.enter)="selectCell(hour, 'high')"
+                class="rounded-sm cursor-pointer transition-all hover:scale-110 relative group focus:outline-none focus:ring-1 focus:ring-primary"
                 [ngClass]="getCellClass(hour, 'high')"
+                role="gridcell"
+                tabindex="0"
+                [attr.aria-label]="
+                  getCount(hour, 'high') +
+                  ' High Severity Anomalies at ' +
+                  hour +
+                  ':00'
+                "
               >
                 <!-- Tooltip (Simple Hover) -->
                 <div
                   *ngIf="getCount(hour, 'high') > 0"
                   class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block z-20 bg-black text-white text-[10px] rounded px-1.5 py-0.5 whitespace-nowrap"
+                  role="tooltip"
                 >
                   {{ getCount(hour, "high") }} Anomalies
                 </div>
@@ -73,16 +129,26 @@ import { DashboardStore, Anomaly } from "../../../core/store/dashboard.store";
             </div>
 
             <!-- Medium Severity Row -->
-            <div class="grid grid-cols-24 gap-1">
+            <div class="grid grid-cols-24 gap-1" role="row">
               <div
                 *ngFor="let hour of hours"
                 (click)="selectCell(hour, 'medium')"
-                class="rounded-sm cursor-pointer transition-all hover:scale-110 relative group"
+                (keydown.enter)="selectCell(hour, 'medium')"
+                class="rounded-sm cursor-pointer transition-all hover:scale-110 relative group focus:outline-none focus:ring-1 focus:ring-primary"
                 [ngClass]="getCellClass(hour, 'medium')"
+                role="gridcell"
+                tabindex="0"
+                [attr.aria-label]="
+                  getCount(hour, 'medium') +
+                  ' Medium Severity Anomalies at ' +
+                  hour +
+                  ':00'
+                "
               >
                 <div
                   *ngIf="getCount(hour, 'medium') > 0"
                   class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block z-20 bg-black text-white text-[10px] rounded px-1.5 py-0.5 whitespace-nowrap"
+                  role="tooltip"
                 >
                   {{ getCount(hour, "medium") }} Anomalies
                 </div>
@@ -90,16 +156,26 @@ import { DashboardStore, Anomaly } from "../../../core/store/dashboard.store";
             </div>
 
             <!-- Low Severity Row -->
-            <div class="grid grid-cols-24 gap-1">
+            <div class="grid grid-cols-24 gap-1" role="row">
               <div
                 *ngFor="let hour of hours"
                 (click)="selectCell(hour, 'low')"
-                class="rounded-sm cursor-pointer transition-all hover:scale-110 relative group"
+                (keydown.enter)="selectCell(hour, 'low')"
+                class="rounded-sm cursor-pointer transition-all hover:scale-110 relative group focus:outline-none focus:ring-1 focus:ring-primary"
                 [ngClass]="getCellClass(hour, 'low')"
+                role="gridcell"
+                tabindex="0"
+                [attr.aria-label]="
+                  getCount(hour, 'low') +
+                  ' Low Severity Anomalies at ' +
+                  hour +
+                  ':00'
+                "
               >
                 <div
                   *ngIf="getCount(hour, 'low') > 0"
                   class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block z-20 bg-black text-white text-[10px] rounded px-1.5 py-0.5 whitespace-nowrap"
+                  role="tooltip"
                 >
                   {{ getCount(hour, "low") }} Anomalies
                 </div>
@@ -108,7 +184,10 @@ import { DashboardStore, Anomaly } from "../../../core/store/dashboard.store";
           </div>
 
           <!-- X-Axis Labels (Hours) -->
-          <div class="min-w-[600px] grid grid-cols-24 gap-1 mt-2">
+          <div
+            class="min-w-[600px] grid grid-cols-24 gap-1 mt-2"
+            aria-hidden="true"
+          >
             <span
               *ngFor="let hour of hours; let i = index"
               class="text-[10px] text-gray-400 text-center"
@@ -123,6 +202,8 @@ import { DashboardStore, Anomaly } from "../../../core/store/dashboard.store";
       <div
         *ngIf="selectedAnomalies().length > 0"
         class="mt-6 border-t border-gray-100 dark:border-gray-800 pt-4 animate-in fade-in slide-in-from-top-4"
+        role="complementary"
+        aria-label="Selected Anomaly Details"
       >
         <div class="flex justify-between items-center mb-3">
           <h4 class="text-sm font-semibold text-gray-800 dark:text-white">
@@ -130,12 +211,16 @@ import { DashboardStore, Anomaly } from "../../../core/store/dashboard.store";
           </h4>
           <button
             (click)="clearSelection()"
-            class="text-xs text-gray-500 hover:text-primary"
+            class="text-xs text-gray-500 hover:text-primary focus:outline-none focus:underline"
+            aria-label="Close Details Panel"
           >
             Close
           </button>
         </div>
-        <div class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
+        <div
+          class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar"
+          tabindex="0"
+        >
           <div
             *ngFor="let anomaly of selectedAnomalies()"
             class="flex items-center justify-between p-2 rounded bg-gray-50 dark:bg-white/[0.05]"

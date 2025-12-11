@@ -1,0 +1,33 @@
+.skeleton-loader {
+  background: #e2e8f0;
+  animation: shimmer 1.5s infinite;
+  background-image: linear-gradient(
+    to right,
+    #e2e8f0 0%,
+    #f3f4f6 20%,
+    #e2e8f0 40%,
+    #e2e8f0 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 800px 104px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+:host-context(html.dark) .skeleton-loader {
+  background: #374151;
+  background-image: linear-gradient(
+    to right,
+    #374151 0%,
+    #4b5563 20%,
+    #374151 40%,
+    #374151 100%
+  );
+}

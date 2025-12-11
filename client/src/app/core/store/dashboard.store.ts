@@ -51,6 +51,7 @@ export class DashboardStore {
   readonly anomalies = signal<Anomaly[]>([]);
   readonly volumeHistory = signal<VolumeMetric[]>([]);
   readonly isPaused = signal<boolean>(false);
+  readonly isLoading = signal<boolean>(true);
 
   // Computed
   readonly eventCount = computed(() => this.events().length);
@@ -70,6 +71,9 @@ export class DashboardStore {
   }
 
   private async initData() {
+    // 0. Load from cache first
+    this.loadFromCache();
+
     try {
       // 1. Fetch initial timeline events
       const timelineRes = await fetch("http://localhost:3000/stats/timeline");
@@ -83,6 +87,7 @@ export class DashboardStore {
         description: `Event type: ${e.type}`,
       }));
       this.events.set(mappedEvents);
+      this.saveToCache("rules_events", mappedEvents);
 
       // 2. Fetch initial anomalies
       const anomaliesRes = await fetch("http://localhost:3000/stats/anomalies");
@@ -95,6 +100,7 @@ export class DashboardStore {
         timestamp: new Date(a.timestamp),
       }));
       this.anomalies.set(mappedAnomalies);
+      this.saveToCache("rules_anomalies", mappedAnomalies);
 
       // 3. Fetch initial overview stats
       const statsRes = await fetch("http://localhost:3000/stats/overview");
@@ -111,8 +117,36 @@ export class DashboardStore {
       const volumeRes = await fetch("http://localhost:3000/stats/volume");
       const volumeData: VolumeMetric[] = await volumeRes.json();
       this.volumeHistory.set(volumeData);
+      this.saveToCache("rules_volume", volumeData);
     } catch (error) {
       console.error("Failed to fetch initial data:", error);
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  private loadFromCache() {
+    const cachedEvents = localStorage.getItem("rules_events");
+    if (cachedEvents) {
+      this.events.set(JSON.parse(cachedEvents));
+    }
+
+    const cachedAnomalies = localStorage.getItem("rules_anomalies");
+    if (cachedAnomalies) {
+      this.anomalies.set(JSON.parse(cachedAnomalies));
+    }
+
+    const cachedVolume = localStorage.getItem("rules_volume");
+    if (cachedVolume) {
+      this.volumeHistory.set(JSON.parse(cachedVolume));
+    }
+  }
+
+  private saveToCache(key: string, data: any) {
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (e) {
+      console.warn("Failed to save to local storage", e);
     }
   }
 
@@ -173,20 +207,21 @@ export class DashboardStore {
       if (this.isPaused()) return;
 
       this.volumeHistory.update((history) => {
+        let newHistory;
         const index = history.findIndex(
           (h) => h.hourDisplay === updatedVolume.hourDisplay
         );
         if (index !== -1) {
           // Update existing hour
-          const newHistory = [...history];
+          newHistory = [...history];
           newHistory[index] = updatedVolume;
-          return newHistory;
         } else {
           // Add new hour, maintain 24h window
-          const newHistory = [...history, updatedVolume];
+          newHistory = [...history, updatedVolume];
           if (newHistory.length > 24) newHistory.shift();
-          return newHistory;
         }
+        this.saveToCache("rules_volume", newHistory);
+        return newHistory;
       });
     });
   }
@@ -199,11 +234,19 @@ export class DashboardStore {
   }
 
   addEvent(event: TimelineEvent) {
-    this.events.update((events) => [event, ...events]); // Prepend new events
+    this.events.update((events) => {
+      const newEvents = [event, ...events];
+      this.saveToCache("rules_events", newEvents);
+      return newEvents;
+    }); // Prepend new events
   }
 
   addAnomaly(anomaly: Anomaly) {
-    this.anomalies.update((anomalies) => [anomaly, ...anomalies]);
+    this.anomalies.update((anomalies) => {
+      const newAnomalies = [anomaly, ...anomalies];
+      this.saveToCache("rules_anomalies", newAnomalies);
+      return newAnomalies;
+    });
   }
 
   updateMetrics(newMetrics: Partial<Metrics>) {
