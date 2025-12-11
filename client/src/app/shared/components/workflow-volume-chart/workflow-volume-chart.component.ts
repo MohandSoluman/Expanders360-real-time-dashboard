@@ -155,7 +155,7 @@ export class WorkflowVolumeChartComponent {
         xaxis: { lines: { show: false } },
       },
       tooltip: {
-        theme: "dark", // Force dark theme for tooltip or make it dynamic if needed
+        theme: "light",
       },
     };
   });

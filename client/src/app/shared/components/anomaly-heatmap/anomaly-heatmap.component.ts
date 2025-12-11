@@ -46,13 +46,13 @@ import { SkeletonLoaderComponent } from "../skeleton-loader/skeleton-loader.comp
       <div *ngIf="!store.isLoading()" class="grid grid-cols-[auto_1fr] gap-4">
         <!-- Y-Axis Labels (Severity) -->
         <div
-          class="flex flex-col justify-around text-xs font-medium text-gray-500 dark:text-gray-400 h-48 py-2"
+          class="grid grid-rows-3 gap-1 text-xs font-medium text-gray-500 dark:text-gray-400 h-48 pt-10"
           role="group"
           aria-label="Filter by Severity"
         >
           <button
             (click)="toggleSeverity('high')"
-            class="flex items-center gap-2 transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary rounded"
+            class="flex items-center gap-2 transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary rounded pl-2"
             [class.opacity-40]="!isSeverityVisible('high')"
             [attr.aria-pressed]="isSeverityVisible('high')"
             aria-label="Toggle High Severity Anomalies"
@@ -66,7 +66,7 @@ import { SkeletonLoaderComponent } from "../skeleton-loader/skeleton-loader.comp
 
           <button
             (click)="toggleSeverity('medium')"
-            class="flex items-center gap-2 transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary rounded"
+            class="flex items-center gap-2 transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary rounded pl-2"
             [class.opacity-40]="!isSeverityVisible('medium')"
             [attr.aria-pressed]="isSeverityVisible('medium')"
             aria-label="Toggle Medium Severity Anomalies"
@@ -80,7 +80,7 @@ import { SkeletonLoaderComponent } from "../skeleton-loader/skeleton-loader.comp
 
           <button
             (click)="toggleSeverity('low')"
-            class="flex items-center gap-2 transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary rounded"
+            class="flex items-center gap-2 transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary rounded pl-2"
             [class.opacity-40]="!isSeverityVisible('low')"
             [attr.aria-pressed]="isSeverityVisible('low')"
             aria-label="Toggle Low Severity Anomalies"
@@ -95,7 +95,7 @@ import { SkeletonLoaderComponent } from "../skeleton-loader/skeleton-loader.comp
 
         <!-- Heatmap Grid -->
         <div
-          class="relative overflow-x-auto pb-2"
+          class="relative overflow-x-auto pb-2 pt-10"
           tabindex="0"
           aria-label="Heatmap data grid"
         >

@@ -1,6 +1,7 @@
-import { Injectable, signal, computed } from "@angular/core";
+import { Injectable, signal, computed, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import io from "socket.io-client";
+import { ToastService } from "../../shared/services/toast.service";
 
 export interface TimelineEvent {
   id: string;
@@ -61,6 +62,7 @@ export class DashboardStore {
   );
 
   private socket: any;
+  private toastService = inject(ToastService);
 
   constructor() {
     this.initData();
@@ -176,9 +178,16 @@ export class DashboardStore {
       };
 
       this.addEvent(newEvent);
+
+      // Toast notification for new event
+      this.toastService.show(`New Event: ${event.type}`, "info");
     });
 
     this.socket.on("new-anomaly", (event: any) => {
+      // Always show anomaly toasts even if paused? Or respect pause?
+      // Requirement says "Real-time toast notifications", usually implies respecting stream flow.
+      // But anomalies might be critical. Let's respect pause for consistency with other updates,
+      // or maybe show them anyway? Let's respect pause for now to allow "silence".
       if (this.isPaused()) return;
 
       const anomaly: Anomaly = {
@@ -199,6 +208,13 @@ export class DashboardStore {
         description: `Anomaly detected: ${event.type}`,
       };
       this.addEvent(newEvent);
+
+      // Toast notification for anomaly
+      this.toastService.show(`Anomaly Detected: ${event.type}`, "error", 5000);
+    });
+
+    this.socket.on("simulated-error", (error: any) => {
+      this.toastService.show(`Backend Error: ${error.message}`, "error", 5000);
     });
 
     this.socket.on("stats-update", (stats: any) => {

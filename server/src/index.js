@@ -17,6 +17,15 @@ app.use(express.json());
 
 const PORT = 3000;
 
+// Middleware to simulate 5% random 500 errors
+app.use((req, res, next) => {
+  if (Math.random() < 0.05) {
+    console.log(`Simulating 500 Error for ${req.method} ${req.url}`);
+    return res.status(500).json({ error: "Simulated Internal Server Error" });
+  }
+  next();
+});
+
 // --- Mock Data State ---
 let workflowStats = {
   totalWorkflowsToday: 145,
@@ -121,6 +130,18 @@ io.on("connection", (socket) => {
 
 // Simulate events every 10-20 seconds
 setInterval(() => {
+  // RANDOM ERROR SIMULATION (5% chance)
+  if (Math.random() < 0.05) {
+    console.log("Simulating 500 Backend Error / Socket Failure");
+    // Optionally emit an error event to the client if you want them to handle it explicitly,
+    // or just "fail" to send successful data to simulate a drop.
+    // For this task, let's emit a specific error event so the client can show a toast (as requested).
+    io.emit("simulated-error", {
+      message: "500 Internal Server Error (Simulated)",
+    });
+    return; // Skip normal processing
+  }
+
   const isAnomaly = Math.random() < 0.3; // 30% chance of anomaly
   const newEvent = {
     id: Date.now(),

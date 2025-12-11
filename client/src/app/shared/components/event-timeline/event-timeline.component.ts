@@ -90,7 +90,7 @@ import { SkeletonLoaderComponent } from "../skeleton-loader/skeleton-loader.comp
         aria-label="Scrollable timeline of events"
       >
         <div
-          class="flex items-center min-w-full gap-4 px-2 pt-20 relative"
+          class="flex items-center min-w-full gap-4 px-2 pt-30 relative"
           style="min-height: 100px;"
           role="list"
         >
@@ -175,7 +175,6 @@ import { SkeletonLoaderComponent } from "../skeleton-loader/skeleton-loader.comp
                 {{ event.timestamp | date : "medium" }}
               </div>
 
-              <!-- Arrow -->
               <div
                 class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white dark:bg-gray-900 border-b border-r border-gray-200 dark:border-gray-800 rotate-45"
               ></div>
