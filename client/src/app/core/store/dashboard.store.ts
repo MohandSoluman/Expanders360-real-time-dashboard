@@ -1,4 +1,5 @@
 import { Injectable, signal, computed } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import io from "socket.io-client";
 
 export interface TimelineEvent {
