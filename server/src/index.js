@@ -15,7 +15,7 @@ const io = new Server(server, {
 app.use(cors());
 app.use(express.json());
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware to simulate 5% random 500 errors
 app.use((req, res, next) => {
