@@ -1,72 +1,14 @@
 import { Component, computed, inject, signal, ViewChild } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { NgApexchartsModule, ChartComponent, ApexOptions } from "ng-apexcharts";
-import {
-  DashboardStore,
-  VolumeMetric,
-} from "../../../core/store/dashboard.store";
+import { DashboardStore } from "../../../core/store/dashboard.store";
+import { VolumeMetric } from "../../../core/store/event.models";
 
 @Component({
   selector: "app-workflow-volume-chart",
   standalone: true,
   imports: [CommonModule, NgApexchartsModule],
-  template: `
-    <div
-      class="col-span-12 rounded-2xl border border-gray-200 bg-white px-5 pt-7.5 pb-5 shadow-theme-sm dark:border-gray-800 dark:bg-white/[0.03] sm:px-7.5"
-    >
-      <div
-        class="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap"
-      >
-        <div class="flex flex-wrap gap-3 sm:gap-5">
-          <div>
-            <h3 class="text-lg font-bold text-gray-800 dark:text-white/90">
-              Workflow Volume & Completion
-            </h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              Total volume vs completion rate
-            </p>
-          </div>
-        </div>
-        <div class="flex w-full max-w-45 justify-end">
-          <div
-            class="inline-flex items-center rounded-md bg-gray-50 dark:bg-gray-900 p-1.5"
-          >
-            <button
-              *ngFor="let filter of ['6h', '12h', '24h']"
-              (click)="activeFilter.set(filter)"
-              class="rounded py-1 px-3 text-xs font-medium transition-all hover:bg-white hover:shadow-card dark:hover:bg-gray-800 dark:text-gray-400 dark:hover:text-white"
-              [ngClass]="{
-                'bg-white shadow-card text-gray-800 dark:bg-gray-800 dark:text-white':
-                  activeFilter() === filter,
-                'text-gray-500': activeFilter() !== filter
-              }"
-            >
-              {{ filter }}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="mb-2">
-        <div id="volumeChart" class="-ml-5">
-          <apx-chart
-            [series]="chartOptions().series!"
-            [chart]="chartOptions().chart!"
-            [colors]="chartOptions().colors!"
-            [plotOptions]="chartOptions().plotOptions!"
-            [stroke]="chartOptions().stroke!"
-            [xaxis]="chartOptions().xaxis!"
-            [yaxis]="chartOptions().yaxis!"
-            [fill]="chartOptions().fill!"
-            [tooltip]="chartOptions().tooltip!"
-            [grid]="chartOptions().grid!"
-            [legend]="chartOptions().legend!"
-            [dataLabels]="chartOptions().dataLabels!"
-          ></apx-chart>
-        </div>
-      </div>
-    </div>
-  `,
+  templateUrl: "./workflow-volume-chart.component.html",
 })
 export class WorkflowVolumeChartComponent {
   store = inject(DashboardStore);
@@ -105,7 +47,7 @@ export class WorkflowVolumeChartComponent {
       chart: {
         height: 350,
         type: "line",
-        toolbar: { show: false },
+        toolbar: { show: true },
         fontFamily: "Inter, sans-serif",
       },
       plotOptions: {

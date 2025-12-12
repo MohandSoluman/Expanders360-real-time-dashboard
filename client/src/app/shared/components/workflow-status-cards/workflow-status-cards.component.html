@@ -1,0 +1,37 @@
+<div
+  class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5"
+>
+  <!-- SLA Compliance Card -->
+  <app-metric-card
+    [value]="store.metrics().slaCompliance + '%'"
+    label="SLA Compliance"
+    [iconPath]="icons.info"
+    [badge]="{ text: '99% target', color: 'green' }"
+    [loading]="store.isLoading()"
+  />
+
+  <!-- Cycle Time Card -->
+  <app-metric-card
+    [value]="store.metrics().averageCycleTime"
+    label="Cycle Time"
+    [iconPath]="icons.clock"
+    [loading]="store.isLoading()"
+  />
+
+  <!-- Active Anomalies Card -->
+  <app-metric-card
+    [value]="store.anomalies().length"
+    label="Active Anomalies"
+    [iconPath]="icons.alert"
+    [badge]="{ text: 'Attention needed', color: 'red' }"
+    [loading]="store.isLoading()"
+  />
+
+  <!-- Total Workflows Card -->
+  <app-metric-card
+    [value]="store.metrics().totalWorkflows"
+    label="Total Workflows"
+    [iconPath]="icons.document"
+    [loading]="store.isLoading()"
+  />
+</div>

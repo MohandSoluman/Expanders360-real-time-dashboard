@@ -133,9 +133,6 @@ setInterval(() => {
   // RANDOM ERROR SIMULATION (5% chance)
   if (Math.random() < 0.05) {
     console.log("Simulating 500 Backend Error / Socket Failure");
-    // Optionally emit an error event to the client if you want them to handle it explicitly,
-    // or just "fail" to send successful data to simulate a drop.
-    // For this task, let's emit a specific error event so the client can show a toast (as requested).
     io.emit("simulated-error", {
       message: "500 Internal Server Error (Simulated)",
     });
@@ -184,10 +181,6 @@ setInterval(() => {
 
     if (lastVolume && lastVolume.hourDisplay === currentHourDisplay) {
       lastVolume.volume++;
-      // emit only the updated last entry, or client can just fetch/increment
-      // Let's emit the full updated list or just the update.
-      // For simplicity/robustness, client can refetch or we emit the update.
-      // Let's emit a specific volume-update event
       io.emit("volume-update", lastVolume);
     } else {
       // New hour started
@@ -202,7 +195,7 @@ setInterval(() => {
       io.emit("volume-update", newEntry);
     }
   }
-}, 15000); // 15 seconds
+}, 10000); // 10 seconds
 
 // Start Server
 server.listen(PORT, () => {

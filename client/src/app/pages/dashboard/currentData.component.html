@@ -4,7 +4,8 @@
     (click)="store.toggleSimulation()"
     class="flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-500 text-white hover:bg-opacity-90 transition-all"
   >
-    <span *ngIf="!store.isPaused()">
+    @if(!store.isPaused()){
+    <span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -21,7 +22,8 @@
       </svg>
       Pause Updates
     </span>
-    <span *ngIf="store.isPaused()">
+    } @if(store.isPaused()){
+    <span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -38,6 +40,7 @@
       </svg>
       Resume Updates
     </span>
+    }
   </button>
 </div>
 

@@ -51,14 +51,12 @@ export const routes: Routes = [
   {
     path: "signup",
     component: SignUpComponent,
-    title:
-      "Angular Sign Up Dashboard | TailAdmin - Angular Admin Dashboard Template",
+    title: "Angular Sign Up Dashboard",
   },
   // error pages
   {
     path: "**",
     component: NotFoundComponent,
-    title:
-      "Angular NotFound Dashboard | TailAdmin - Angular Admin Dashboard Template",
+    title: "Angular NotFound Dashboard",
   },
 ];

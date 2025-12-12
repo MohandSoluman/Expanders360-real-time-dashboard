@@ -1,0 +1,51 @@
+<div
+  class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] shadow-theme-sm transition-shadow hover:shadow-md"
+>
+  <!-- Loading State -->
+  <ng-container *ngIf="loading">
+    <div class="animate-pulse">
+      <div
+        class="h-11.5 w-11.5 rounded-full bg-gray-200 dark:bg-gray-700"
+      ></div>
+      <div class="mt-4 space-y-2">
+        <div class="h-8 w-20 rounded bg-gray-200 dark:bg-gray-700"></div>
+        <div class="h-4 w-32 rounded bg-gray-200 dark:bg-gray-700"></div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Content -->
+  <ng-container *ngIf="!loading">
+    <!-- Icon -->
+    <div
+      class="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-900"
+    >
+      <svg
+        class="fill-current w-6 h-6 text-gray-800 dark:text-white/90"
+        viewBox="0 0 24 24"
+      >
+        <path [attr.d]="iconPath" />
+      </svg>
+    </div>
+
+    <!-- Value and Label -->
+    <div class="mt-4 flex items-end justify-between">
+      <div>
+        <h4 class="text-title-md font-bold text-black dark:text-white">
+          {{ value }}
+        </h4>
+        <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
+          {{ label }}
+        </span>
+      </div>
+
+      <!-- Optional Badge -->
+      <span
+        *ngIf="badge"
+        class="flex items-center gap-1 text-sm font-medium text-meta-3"
+      >
+        <span [ngClass]="badgeColorClass">{{ badge.text }}</span>
+      </span>
+    </div>
+  </ng-container>
+</div>
