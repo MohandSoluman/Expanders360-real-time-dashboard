@@ -2,6 +2,17 @@
 
 A high-performance real-time dashboard for monitoring legal workflow volumes, detecting anomalies, and tracking event timelines. Built with Angular (Signals), NgRx, Node.js, and Socket.io.
 
+## 📸 Dashboard Preview
+
+<p align="center">
+  <img src="client/public/images/dashboard/1.png" width="45%" />
+  <img src="client/public/images/dashboard/2.png" width="45%" />
+  <img src="client/public/images/dashboard/3.png" width="45%" />
+  <img src="client/public/images/dashboard/4.png" width="45%" />
+  <img src="client/public/images/dashboard/5.png" width="45%" />
+  <img src="client/public/images/dashboard/6.png" width="45%" />
+</p>
+
 ## 🚀 Features
 
 - **Real-time Event Timeline**: Live stream of system events with status indicators.
