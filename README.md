@@ -81,3 +81,49 @@ Designed for enterprise scale with:
 - **Push-based Architecture**: Minimizes polling overhead.
 - **Efficient DOM Updates**: Angular Signals + OnPush strategy.
 - **Pattern-Ready**: Ready for Redis Adapter and Load Balancing (see ARCHITECTURE.md).
+
+## ☁️ Deployment
+
+### Prerequisites
+
+- A GitHub repository containing this project.
+- Accounts on the chosen hosting provider.
+
+<details>
+<summary><strong>Option 1: Railway (Recommended)</strong></summary>
+
+1.  Sign up at [Railway.app](https://railway.app/).
+2.  Click **New Project** > **GitHub Repo**.
+3.  Select this repository.
+4.  **Configuration**:
+    - Railway may try to build a single Dockerfile. For this monorepo, it is best to **Deploy the `server` folder** as one service, and the `client` as another.
+    - **Backend Service**: Set Root Directory to `server`. Add `PORT` variable.
+    - **Frontend Service**: Set Root Directory to `client`. Build Command: `npm run build`. Start Command: `npx http-server dist/ng-tailadmin/browser -p $PORT` (add `http-server` to deps if needed).
+
+</details>
+
+<details>
+<summary><strong>Option 2: Render</strong></summary>
+
+**Backend (Web Service)**
+
+1.  Root Directory: `server`
+2.  Build Command: `npm install`
+3.  Start Command: `node src/index.js`
+
+**Frontend (Static Site)**
+
+1.  Root Directory: `client`
+2.  Build Command: `npm install && npm run build`
+3.  Publish Directory: `dist/ng-tailadmin/browser`
+4.  **Important**: Add a Rewrite Rule: Source `/*`, Destination `/index.html`, Action `Rewrite`.
+
+</details>
+
+<details>
+<summary><strong>Option 3: Azure App Service</strong></summary>
+
+1.  **Backend**: Deploy `server` folder to a Node.js Web App.
+2.  **Frontend**: Run `ng build` and deploy the `dist` folder to an Azure Static Web App.
+
+</details>
